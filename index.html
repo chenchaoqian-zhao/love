@@ -54,6 +54,20 @@
         .music-btn.playing { animation: musicRotate 3s linear infinite; }
         @keyframes musicRotate { 100% { transform: rotate(360deg); } }
 
+        /* ---------- 音频播放器（隐藏，仅背景音乐） ---------- */
+        .music-frame {
+            position: fixed; bottom: 0; left: 0;
+            width: 1px; height: 1px;
+            overflow: hidden;
+            opacity: 0; pointer-events: none;
+            z-index: 2000;
+        }
+        .music-frame.hidden { display: none; }
+        .music-frame iframe {
+            width: 1px; height: 1px;
+            border: none;
+        }
+
         /* ---------- 翻页提示 ---------- */
         .swipe-hint {
             position: absolute; bottom: 30px; left: 50%;
@@ -101,7 +115,7 @@
         }
 
         .cover-img-wrap {
-            width: 160px; height: 160px; border-radius: 50%;
+            width: 190px; height: 190px; border-radius: 50%;
             border: 2px solid rgba(212,175,55,.5);
             overflow: hidden; margin-bottom: 28px;
             position: relative; z-index: 1;
@@ -145,12 +159,13 @@
 
         /* ============ 第二屏：引言 + 小画廊 ============ */
         .screen-intro {
-            background: linear-gradient(180deg, #fef9f3 0%, #fdf3e7 50%, #fce8d5 100%);
+            background: linear-gradient(180deg, #f5f0ea 0%, #ece2d6 40%, #ddd0c4 100%);
         }
         .intro-img-wrap {
-            width: 65%; max-width: 240px; aspect-ratio: 3/4;
+            width: 80%; max-width: 310px; aspect-ratio: 3/4;
             border-radius: 12px; overflow: hidden;
             margin-bottom: 20px;
+            margin-left: auto; margin-right: auto;
             box-shadow: 0 12px 40px rgba(0,0,0,.1);
             animation: fadeInUp 1s .2s both;
         }
@@ -160,7 +175,9 @@
         }
         .intro-mini-gallery {
             display: flex; gap: 8px; margin-bottom: 18px;
-            width: 65%; max-width: 240px;
+            width: 80%; max-width: 310px;
+            margin-left: auto; margin-right: auto;
+            justify-content: center;
             animation: fadeInUp 1s .3s both;
         }
         .intro-mini-gallery .mini-img {
@@ -172,7 +189,7 @@
             display: block;
         }
         .intro-text {
-            font-size: 14px; line-height: 1.9; color: #6b5a50;
+            font-size: 14px; line-height: 1.9; color: #5a4d40;
             text-align: center; letter-spacing: 1px;
             font-weight: 300; max-width: 260px;
             animation: fadeInUp 1s .4s both;
@@ -184,11 +201,13 @@
 
         /* ============ 第九屏：详细信息 + 装饰图 ============ */
         .screen-detail {
-            background: linear-gradient(180deg, #faf8f6 0%, #f5efe8 100%);
+            background: linear-gradient(180deg, #eae5de 0%, #dfd8cf 100%);
         }
         .detail-decor-imgs {
             display: flex; gap: 10px; margin-bottom: 18px;
-            width: 85%; max-width: 320px;
+            width: 90%; max-width: 350px;
+            margin-left: auto; margin-right: auto;
+            justify-content: center;
             animation: fadeInUp 1s .1s both;
         }
         .detail-decor-imgs .decor-img {
@@ -202,7 +221,8 @@
         }
         .detail-card {
             width: 100%; max-width: 320px;
-            background: rgba(255,255,255,.75);
+            margin-left: auto; margin-right: auto;
+            background: rgba(255,255,255,.65);
             border-radius: 14px; padding: 28px 22px;
             box-shadow: 0 8px 30px rgba(0,0,0,.04);
             backdrop-filter: blur(10px);
@@ -228,39 +248,59 @@
             letter-spacing: 1px; line-height: 1.5;
         }
 
-        /* ============ 第三~七屏：单张照片展示屏 ============ */
+        /* ============ 第三~七屏：单张照片展示屏（满屏大图） ============ */
         .screen-photo {
-            background: linear-gradient(180deg, #fef9f3 0%, #fdf3e7 60%, #fce8d5 100%);
+            padding: 0;
+            background: #1a1a1a;
         }
         .photo-img-wrap {
-            width: 72%; max-width: 280px; aspect-ratio: 3/4;
-            border-radius: 14px; overflow: hidden;
-            margin-bottom: 22px;
-            box-shadow: 0 14px 44px rgba(0,0,0,.12);
-            animation: fadeInUp 1s .15s both;
+            width: 100%; height: 100vh;
+            overflow: hidden;
+            animation: fullImgReveal 1.2s cubic-bezier(.22,.61,.36,1) both;
         }
         .photo-img-wrap img {
             width: 100%; height: 100%; object-fit: cover;
             display: block;
         }
+        @keyframes fullImgReveal {
+            0% { opacity: 0; transform: scale(1.06); }
+            100% { opacity: 1; transform: scale(1); }
+        }
         .photo-caption {
-            font-size: 16px; line-height: 1.8; color: #6b5a50;
-            text-align: center; letter-spacing: 2px;
-            font-weight: 300; max-width: 280px;
-            animation: fadeInUp 1s .35s both;
+            position: absolute; bottom: 80px; left: 0; right: 0;
+            font-size: 18px; line-height: 1.8; color: #fff;
+            text-align: center; letter-spacing: 3px;
+            font-weight: 200; max-width: 320px;
+            margin: 0 auto; z-index: 10;
+            text-shadow: 0 2px 12px rgba(0,0,0,.6);
+            animation: fadeInUp 1s .5s both;
+        }
+        .photo-caption::before {
+            content: ''; display: block;
+            width: 40px; height: 1px;
+            background: rgba(255,255,255,.4);
+            margin: 0 auto 12px;
         }
         .photo-caption small {
-            display: block; font-size: 12px; color: #b8a494;
-            margin-top: 4px; letter-spacing: 1px;
+            display: block; font-size: 13px; color: rgba(255,255,255,.65);
+            margin-top: 6px; letter-spacing: 1px; font-weight: 200;
+        }
+        /* 底部渐变遮罩让文字可读 */
+        .photo-overlay {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 55%; pointer-events: none; z-index: 1;
+            background: linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 100%);
         }
 
         /* ============ 第八屏：流程安排 + 图片 ============ */
         .screen-schedule {
-            background: linear-gradient(180deg, #fcfaf7 0%, #f6f0e9 100%);
+            background: linear-gradient(180deg, #ede7df 0%, #e0d7ce 100%);
         }
         .schedule-imgs {
             display: flex; gap: 10px; margin-bottom: 22px;
-            width: 82%; max-width: 300px;
+            width: 90%; max-width: 350px;
+            margin-left: auto; margin-right: auto;
+            justify-content: center;
             animation: fadeInUp 1s .1s both;
         }
         .schedule-imgs .sched-img {
@@ -315,7 +355,7 @@
         }
         .end-imgs {
             display: flex; gap: 12px; margin-bottom: 28px;
-            width: 70%; max-width: 280px;
+            width: 80%; max-width: 330px;
             justify-content: center;
             animation: coverFadeIn 1.5s both;
         }
@@ -359,11 +399,227 @@
         @media (min-width: 431px) {
             .container { border-left: 1px solid rgba(255,255,255,.05); border-right: 1px solid rgba(255,255,255,.05); }
         }
+
+        /* ============ 电影感效果 ============ */
+        .film-grain {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 996;
+            opacity: 0.035;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            animation: grainAnim .4s steps(8) infinite;
+        }
+        @keyframes grainAnim {
+            0%,100%{transform:translate(0,0)} 25%{transform:translate(-1px,1px)} 50%{transform:translate(1px,-1px)} 75%{transform:translate(-1px,-1px)}
+        }
+        .cinematic-vignette {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 995;
+            background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.5) 100%);
+        }
+        .letterbox-top, .letterbox-bottom {
+            position: fixed; left: 0; width: 100%; pointer-events: none; z-index: 994;
+            height: 3vh; transition: height .8s;
+        }
+        .letterbox-top { top: 0; background: linear-gradient(to bottom, #000, transparent); }
+        .letterbox-bottom { bottom: 0; background: linear-gradient(to top, #000, transparent); }
+
+        /* ============ 导航点 ============ */
+        .nav-dots {
+            position: fixed; right: 14px; top: 50%; transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 14px; z-index: 999;
+        }
+        .nav-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: rgba(255,255,255,.35);
+            border: 1.5px solid rgba(255,255,255,.5);
+            cursor: pointer; transition: all .4s;
+            position: relative; 
+            backdrop-filter: blur(4px);
+        }
+        .nav-dot.active {
+            background: #d4af37;
+            border-color: #d4af37;
+            box-shadow: 0 0 12px rgba(212,175,55,.6);
+            transform: scale(1.3);
+        }
+        .nav-dot .dot-progress {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            width: 100%; height: 100%; border-radius: 50%;
+            border: 1.5px solid #d4af37;
+            clip-path: inset(0 0 0 0);
+            opacity: 0; transition: none;
+        }
+        .nav-dot.active .dot-progress {
+            opacity: 1;
+            animation: dotProgress 6s linear forwards;
+        }
+        @keyframes dotProgress {
+            0% { clip-path: inset(0 0 0 0); }
+            100% { clip-path: inset(0 0 100% 0); }
+        }
+
+        /* 进度条 */
+        .slide-progress {
+            position: fixed; top: 0; left: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, #d4af37);
+            z-index: 1000; transition: width .1s linear;
+            pointer-events: none;
+        }
+
+        /* ============ 屏幕过渡增强 ============ */
+        .screen {
+            transition: filter .6s ease, opacity .6s ease;
+        }
+        .screen.inactive {
+            filter: brightness(.7) saturate(.8);
+        }
+
+        /* 打字机光标 */
+        .typing-cursor::after {
+            content: '|'; animation: blink 1s step-end infinite;
+            color: #f5d78c; font-weight: 100;
+        }
+        @keyframes blink { 50%{opacity:0} }
+
+        @media (max-width: 430px) {
+            .nav-dots { right: 8px; gap: 12px; }
+            .nav-dot { width: 8px; height: 8px; }
+        }
+
+        /* ============ 礼花筒开场动画 ============ */
+        .welcome-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 10000; display: flex; align-items: center; justify-content: center;
+            pointer-events: none;
+            background: rgba(0,0,0,.45);
+            transition: opacity .8s ease;
+        }
+        .welcome-overlay.fade-out {
+            opacity: 0;
+        }
+        .popper-wrap {
+            position: relative;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .popper-body {
+            position: relative; z-index: 2;
+            font-size: 100px;
+            animation: popperBounce 0.7s cubic-bezier(.25,.46,.45,.94) .3s both;
+            filter: drop-shadow(0 0 30px rgba(255,180,200,.5));
+        }
+        @keyframes popperBounce {
+            0%   { transform: scale(0) rotate(-30deg); opacity: 0; }
+            50%  { transform: scale(1.3) rotate(5deg); opacity: 1; }
+            75%  { transform: scale(.9) rotate(-2deg); }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+        .popper-spark {
+            position: absolute; top: 50%; left: 50%;
+            width: 0; height: 0; z-index: 1;
+            pointer-events: none;
+        }
+        .popper-spark::before,
+        .popper-spark::after {
+            content: ''; position: absolute;
+            width: 12px; height: 12px; border-radius: 50%;
+            background: #ffb3c6;
+            animation: sparkBurst .9s ease-out .7s both;
+            box-shadow: 0 0 12px #ffb3c6, 0 0 24px rgba(255,179,198,.5);
+        }
+        .popper-spark::after {
+            background: #d4af37;
+            animation-delay: .75s;
+            box-shadow: 0 0 12px #d4af37, 0 0 24px rgba(212,175,55,.5);
+        }
+        @keyframes sparkBurst {
+            0%   { transform: translate(0,0) scale(0); opacity: 1; }
+            100% { transform: translate(calc(var(--sx,0)*30px), calc(var(--sy,0)*30px)) scale(1.5); opacity: 0; }
+        }
+        /* 小星星粒子 */
+        .mini-particle {
+            position: absolute; top: 50%; left: 50%;
+            width: 6px; height: 6px; border-radius: 50%;
+            pointer-events: none; z-index: 1;
+            animation: miniBurst .8s ease-out .7s both;
+        }
+        @keyframes miniBurst {
+            0%   { transform: translate(0,0) scale(0); opacity: 1; }
+            100% { transform: translate(calc(var(--mx,0)*80px), calc(var(--my,0)*80px)) scale(.3); opacity: 0; }
+        }
+        /* 花瓣 */
+        .petal {
+            position: fixed; pointer-events: none; z-index: 9998;
+            animation: petalFall linear forwards;
+        }
+        @keyframes petalFall {
+            0% {
+                opacity: 0;
+                transform: translate(0, -30px) rotate(var(--rot-start,0deg)) scale(0);
+            }
+            5% {
+                opacity: 1;
+                transform: translate(var(--drift-x,0px), 0) rotate(var(--rot-start,0deg)) scale(1);
+            }
+            90% {
+                opacity: .7;
+            }
+            100% {
+                opacity: 0;
+                transform: translate(calc(var(--drift-x,0px) + var(--drift2,20px)), calc(100vh + 60px)) rotate(var(--rot-end,720deg)) scale(.5);
+            }
+        }
+        .popper-label {
+            position: relative; z-index: 2;
+            color: #fff; font-size: 16px; letter-spacing: 4px;
+            font-weight: 200; margin-top: 6px;
+            animation: labelFade .7s ease .5s both;
+        }
+        @keyframes labelFade {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
+<!-- 礼花筒开场动画 -->
+<div class="welcome-overlay" id="welcomeOverlay">
+    <div class="popper-wrap">
+        <div class="popper-body" id="popperBody">🎊</div>
+        <div class="popper-spark" style="--sx:1;--sy:-1.5"></div>
+        <div class="popper-spark" style="--sx:-1;--sy:-1.3"></div>
+        <div class="popper-spark" style="--sx:1.5;--sy:-.5"></div>
+        <div class="popper-spark" style="--sx:-1.5;--sy:-.7"></div>
+        <div class="popper-spark" style="--sx:.6;--sy:-1.8"></div>
+        <div class="popper-spark" style="--sx:-.6;--sy:-1.6"></div>
+        <p class="popper-label">诚邀您参加我们的婚礼</p>
+    </div>
+</div>
+
 <div class="container">
+
+    <!-- 电影感覆盖层 -->
+    <div class="film-grain"></div>
+    <div class="cinematic-vignette"></div>
+    <div class="letterbox-top"></div>
+    <div class="letterbox-bottom"></div>
+
+    <!-- 进度条 -->
+    <div class="slide-progress" id="slideProgress"></div>
+
+    <!-- 导航点 -->
+    <nav class="nav-dots" id="navDots">
+        <div class="nav-dot active" data-index="0"><span class="dot-progress"></span></div>
+        <div class="nav-dot" data-index="1"><span class="dot-progress"></span></div>
+        <div class="nav-dot" data-index="2"><span class="dot-progress"></span></div>
+        <div class="nav-dot" data-index="3"><span class="dot-progress"></span></div>
+        <div class="nav-dot" data-index="4"><span class="dot-progress"></span></div>
+        <div class="nav-dot" data-index="5"><span class="dot-progress"></span></div>
+        <div class="nav-dot" data-index="6"><span class="dot-progress"></span></div>
+        <div class="nav-dot" data-index="7"><span class="dot-progress"></span></div>
+        <div class="nav-dot" data-index="8"><span class="dot-progress"></span></div>
+        <div class="nav-dot" data-index="9"><span class="dot-progress"></span></div>
+    </nav>
 
     <!-- ========== 第一屏：封面 ========== -->
     <section class="screen screen-cover">
@@ -410,40 +666,45 @@
     <!-- ========== 第三屏：初见 ========== -->
     <section class="screen screen-photo">
         <div class="photo-img-wrap">
-            <img src="https://picsum.photos/id/1015/560/746" alt="初见" loading="lazy"/>
+            <img src="https://picsum.photos/id/1015/900/1600" alt="初见" loading="lazy"/>
         </div>
+        <div class="photo-overlay"></div>
         <p class="photo-caption">还记得第一次遇见你<small>那天阳光正好，你穿了一件白衬衫</small></p>
     </section>
 
     <!-- ========== 第四屏：相知 ========== -->
     <section class="screen screen-photo">
         <div class="photo-img-wrap">
-            <img src="https://picsum.photos/id/1016/560/746" alt="相知" loading="lazy"/>
+            <img src="https://picsum.photos/id/1016/900/1600" alt="相知" loading="lazy"/>
         </div>
+        <div class="photo-overlay"></div>
         <p class="photo-caption">慢慢地走进彼此的世界<small>每一个平凡的日子都变得闪闪发光</small></p>
     </section>
 
     <!-- ========== 第五屏：相爱 ========== -->
     <section class="screen screen-photo">
         <div class="photo-img-wrap">
-            <img src="https://picsum.photos/id/1018/560/746" alt="相爱" loading="lazy"/>
+            <img src="https://picsum.photos/id/1018/900/1600" alt="相爱" loading="lazy"/>
         </div>
+        <div class="photo-overlay"></div>
         <p class="photo-caption">从朋友到恋人<small>原来最好的关系就是，和你在一起</small></p>
     </section>
 
     <!-- ========== 第六屏：求婚 ========== -->
     <section class="screen screen-photo">
         <div class="photo-img-wrap">
-            <img src="https://picsum.photos/id/1025/560/746" alt="求婚" loading="lazy"/>
+            <img src="https://picsum.photos/id/1025/900/1600" alt="求婚" loading="lazy"/>
         </div>
+        <div class="photo-overlay"></div>
         <p class="photo-caption">"嫁给我好吗？"<small>全世界都安静了，只剩下我的心跳和你</small></p>
     </section>
 
     <!-- ========== 第七屏：携手 ========== -->
     <section class="screen screen-photo">
         <div class="photo-img-wrap">
-            <img src="https://picsum.photos/id/1044/560/746" alt="携手" loading="lazy"/>
+            <img src="https://picsum.photos/id/1044/900/1600" alt="携手" loading="lazy"/>
         </div>
+        <div class="photo-overlay"></div>
         <p class="photo-caption">往后余生，请多指教<small>两个人，一辈子，一切都刚刚好</small></p>
     </section>
 
@@ -566,66 +827,212 @@
 <!-- 音乐按钮 -->
 <button class="music-btn playing" id="musicBtn" onclick="toggleMusic()">🎵</button>
 
-<!-- 背景音乐 -->
-<audio id="bgMusic" loop preload="auto">
-    <source src="https://kw-er.kuwo.cn/6a76956a5c0d46e1a4c4ab09a346ac7d/6a755c14/resource/30106/trackmedia/M500003UpzC63UG2st.mp3?bitrate%24128&from=vip" type="audio/mpeg"/>
-</audio>
+<!-- 网易云音乐播放器（用户交互后自动播放） -->
+<div class="music-frame" id="musicFrame"></div>
 
 <script>
-    /* ===== 背景音乐控制 ===== */
-    const bgMusic = document.getElementById('bgMusic');
-    const musicBtn = document.getElementById('musicBtn');
-    let musicPlaying = false;
+    /* ===== DOM 引用 ===== */
+    const container   = document.querySelector('.container');
+    const screens     = document.querySelectorAll('.screen');
+    const navDots     = document.querySelectorAll('.nav-dot');
+    const progressBar = document.getElementById('slideProgress');
+    const musicBtn    = document.getElementById('musicBtn');
+    const totalSlides = screens.length;
 
-    function initMusic() {
-        if (!bgMusic.src || bgMusic.src === window.location.href || bgMusic.src === '') {
-            console.log('💡 提示：请替换 <audio> 的 src 为真实背景音乐 URL');
+    let currentSlide  = 0;
+    let musicPlaying  = false;
+    let autoTimer     = null;
+    let scrollDebounce = null;
+    let justTouched   = false;
+    const SLIDE_DURATION = 6000;
+    const TOUCH_COOLDOWN  = 800;
+
+    /* ===== 礼花筒开场动画 ===== */
+    function createPetals(count) {
+        const emojis = ['🌸','🌺','🌷','🌹','💮','🏵️','✿','❀','💐','💗','💖','✨'];
+        const colors = ['#ff6b8a','#ff9eb5','#ffb3c6','#ff4d6d','#f7c5cc','#d4af37','#ffd4de','#ffe0e6'];
+        const fragments = [];
+        for (let i = 0; i < count; i++) {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            petal.style.left = (Math.random() * 94 + 3) + '%';
+            petal.style.top = -(Math.random() * 25 + 5) + '%';
+            petal.style.fontSize = (Math.random() * 18 + 16) + 'px';
+            petal.style.animationDuration = (Math.random() * 2.5 + 2.8) + 's';
+            petal.style.animationDelay = (Math.random() * 1.2 + .6) + 's';
+            petal.style.setProperty('--drift-x', ((Math.random() - .5) * 280) + 'px');
+            petal.style.setProperty('--drift2', ((Math.random() - .5) * 80) + 'px');
+            petal.style.setProperty('--rot-start', (Math.random() * 360) + 'deg');
+            petal.style.setProperty('--rot-end', (Math.random() * 720 + 360) + 'deg');
+            petal.style.color = colors[Math.floor(Math.random() * colors.length)];
+            petal.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            document.body.appendChild(petal);
+            fragments.push(petal);
         }
-        bgMusic.volume = 0.5;
-        bgMusic.play().then(() => {
-            musicPlaying = true;
-            musicBtn.classList.add('playing');
-            musicBtn.textContent = '🎵';
-        }).catch(() => {
-            musicPlaying = false;
-            musicBtn.classList.remove('playing');
-            musicBtn.textContent = '🔇';
-        });
+        setTimeout(() => { fragments.forEach(p => p.remove()); }, 4500);
     }
 
+    function showWelcomeAnimation() {
+        createPetals(50);
+        const overlay = document.getElementById('welcomeOverlay');
+        setTimeout(() => {
+            if (overlay) overlay.classList.add('fade-out');
+            setTimeout(() => { if (overlay) overlay.remove(); }, 800);
+        }, 2600);
+    }
+
+    /* ===== 音乐控制：B站隐藏iframe自动播放 ===== */
+    const musicFrame = document.getElementById('musicFrame');
+
+    // 页面加载时创建隐藏的B站播放器
+    function initBiliPlayer() {
+        musicFrame.innerHTML = '<iframe width="400" height="225" '
+            + 'src="https://player.bilibili.com/player.html?bvid=BV1EL9JBpEqW&autoplay=1&page=1" '
+            + 'frameborder="0" allow="autoplay" allowfullscreen></iframe>';
+    }
+    initBiliPlayer();
+
+    // 用户首次交互时，如果autoplay被浏览器拦截，重新加载iframe触发播放
+    function tryAutoPlay() {
+        if (musicPlaying) return;
+        // 重新设置src触发加载（用户手势上下文允许autoplay）
+        const iframe = musicFrame.querySelector('iframe');
+        if (iframe) {
+            iframe.src = iframe.src;
+        }
+        musicPlaying = true;
+        musicBtn.classList.add('playing');
+        musicBtn.textContent = '🎵';
+    }
+
+    ['click','touchstart','keydown'].forEach(function(evt) {
+        document.addEventListener(evt, tryAutoPlay, { once: true });
+    });
+    container.addEventListener('scroll', tryAutoPlay, { once: true });
+
+    // ===== 音乐开关按钮 =====
     function toggleMusic() {
         if (musicPlaying) {
-            bgMusic.pause();
+            musicFrame.style.display = 'none';
             musicPlaying = false;
             musicBtn.classList.remove('playing');
             musicBtn.textContent = '🔇';
         } else {
-            bgMusic.play().then(() => {
-                musicPlaying = true;
-                musicBtn.classList.add('playing');
-                musicBtn.textContent = '🎵';
-            }).catch(() => {
-                musicPlaying = false;
-                musicBtn.classList.remove('playing');
-                musicBtn.textContent = '🔇';
-            });
+            musicFrame.style.display = '';
+            // 重新触发播放
+            const iframe = musicFrame.querySelector('iframe');
+            if (iframe) { iframe.src = iframe.src; }
+            musicPlaying = true;
+            musicBtn.classList.add('playing');
+            musicBtn.textContent = '🎵';
         }
     }
 
-    /* ===== RSVP 按钮 ===== */
+    /* ===== 导航更新 ===== */
+    function updateNav(index) {
+        navDots.forEach((d, i) => {
+            d.classList.toggle('active', i === index);
+            const p = d.querySelector('.dot-progress');
+            if (p) { p.style.animation = 'none'; p.offsetHeight; p.style.animation = ''; }
+        });
+        progressBar.style.transition = 'none';
+        progressBar.style.width = '0%';
+        requestAnimationFrame(() => {
+            progressBar.style.transition = `width ${SLIDE_DURATION}ms linear`;
+            progressBar.style.width = '100%';
+        });
+    }
+
+    /* ===== 滚动到指定屏 ===== */
+    function goToSlide(index) {
+        if (index < 0 || index >= totalSlides) return;
+        currentSlide = index;
+        screens[index].scrollIntoView({ behavior: 'smooth' });
+        updateNav(index);
+        resetAutoTimer();
+    }
+
+    /* ===== 自动轮播 ===== */
+    function startAutoTimer() {
+        clearInterval(autoTimer);
+        autoTimer = setInterval(() => {
+            if (justTouched) return;
+            const next = (currentSlide + 1) % totalSlides;
+            goToSlide(next);
+        }, SLIDE_DURATION);
+    }
+
+    function resetAutoTimer() {
+        clearInterval(autoTimer);
+        progressBar.style.transition = 'none';
+        progressBar.style.width = '0%';
+        requestAnimationFrame(() => {
+            progressBar.style.transition = `width ${SLIDE_DURATION}ms linear`;
+            progressBar.style.width = '100%';
+        });
+        startAutoTimer();
+    }
+
+    /* ===== 滚动监听 ===== */
+    container.addEventListener('scroll', () => {
+        const st = container.scrollTop;
+        const h  = container.clientHeight;
+        const idx = Math.round(st / h);
+        if (idx !== currentSlide && idx >= 0 && idx < totalSlides) {
+            currentSlide = idx;
+            updateNav(idx);
+            resetAutoTimer();
+        }
+    }, { passive: true });
+
+    /* ===== 触摸冷却 ===== */
+    container.addEventListener('touchstart', () => {
+        justTouched = true;
+        clearTimeout(scrollDebounce);
+    }, { passive: true });
+
+    container.addEventListener('touchend', () => {
+        clearTimeout(scrollDebounce);
+        scrollDebounce = setTimeout(() => {
+            justTouched = false;
+            resetAutoTimer();
+        }, TOUCH_COOLDOWN);
+    }, { passive: true });
+
+    /* ===== 导航点点击 ===== */
+    navDots.forEach(dot => {
+        dot.addEventListener('click', () => {
+            goToSlide(parseInt(dot.dataset.index));
+        });
+    });
+
+    /* ===== 键盘导航 ===== */
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+            e.preventDefault();
+            goToSlide(Math.min(currentSlide + 1, totalSlides - 1));
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+            e.preventDefault();
+            goToSlide(Math.max(currentSlide - 1, 0));
+        } else if (e.key === ' ') {
+            e.preventDefault();
+            toggleMusic();
+        }
+    });
+
+    /* ===== RSVP ===== */
     function handleRSVP() {
         alert('感谢您的回复！\n我们期待在婚礼现场与您相见 ❤️');
     }
 
-    /* ===== 首次交互时初始化音乐 ===== */
-    document.addEventListener('click', function firstTouch() {
-        initMusic();
-        document.removeEventListener('click', firstTouch);
-    }, { once: true });
-    document.addEventListener('touchstart', function firstTouch2() {
-        initMusic();
-        document.removeEventListener('touchstart', firstTouch2);
-    }, { once: true });
+    /* ===== 初始化 ===== */
+    updateNav(0);
+    startAutoTimer();
+
+    // 页面加载后播放礼花动画
+    window.addEventListener('DOMContentLoaded', () => {
+        showWelcomeAnimation();
+    });
 </script>
 
 </body>

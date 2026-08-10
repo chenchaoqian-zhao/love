@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>婚礼邀请函 — 张宇 & 林悦</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%; height: 100%;
+            overflow: hidden;
+            font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "STXihei", sans-serif;
+            background: #000;
+        }
+
+        /* ---------- 容器 ---------- */
+        .container {
+            width: 100vw; height: 100vh;
+            max-width: 430px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            scroll-behavior: smooth;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: y mandatory;
+        }
+        .container::-webkit-scrollbar { display: none; }
+
+        /* ---------- 每一屏 ---------- */
+        .screen {
+            width: 100%; height: 100vh;
+            scroll-snap-align: start;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 0 8%;
+        }
+
+        /* ---------- 音乐按钮 ---------- */
+        .music-btn {
+            position: fixed; top: 20px; right: 20px;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(212,175,55,.25); backdrop-filter: blur(10px);
+            border: 1px solid rgba(212,175,55,.4);
+            color: #fff; font-size: 20px;
+            cursor: pointer; z-index: 999;
+            display: flex; align-items: center; justify-content: center;
+            transition: all .3s;
+        }
+        .music-btn.playing { animation: musicRotate 3s linear infinite; }
+        @keyframes musicRotate { 100% { transform: rotate(360deg); } }
+
+        /* ---------- 翻页提示 ---------- */
+        .swipe-hint {
+            position: absolute; bottom: 30px; left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,.6); font-size: 13px;
+            letter-spacing: 2px;
+            animation: floatHint 2s ease-in-out infinite;
+        }
+        .swipe-hint.dark {
+            color: rgba(120,100,80,.6);
+        }
+        @keyframes floatHint {
+            0%, 100% { opacity: .4; transform: translateX(-50%) translateY(0); }
+            50%      { opacity: 1;   transform: translateX(-50%) translateY(-8px); }
+        }
+
+        /* ============ 第一屏：封面（金色主题） ============ */
+        .screen-cover {
+            background: linear-gradient(160deg, #1a1005 0%, #2d1c08 35%, #4a2e10 70%, #3d220c 100%);
+        }
+        .cover-decor {
+            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .cover-particle {
+            position: absolute; border-radius: 50%;
+            background: rgba(212,175,55,.7);
+            animation: particleDrift 8s ease-in-out infinite;
+        }
+        .cover-particle:nth-child(1) { width:4px; height:4px; top:15%; left:20%; animation-delay:0s; }
+        .cover-particle:nth-child(2) { width:3px; height:3px; top:25%; left:70%; animation-delay:1s; }
+        .cover-particle:nth-child(3) { width:5px; height:5px; top:40%; left:35%; animation-delay:2s; }
+        .cover-particle:nth-child(4) { width:3px; height:3px; top:55%; left:80%; animation-delay:3s; }
+        .cover-particle:nth-child(5) { width:4px; height:4px; top:70%; left:15%; animation-delay:1.5s; }
+        .cover-particle:nth-child(6) { width:6px; height:6px; top:20%; left:50%; animation-delay:4s; }
+        .cover-particle:nth-child(7) { width:3px; height:3px; top:65%; left:60%; animation-delay:2.5s; }
+        .cover-particle:nth-child(8) { width:4px; height:4px; top:80%; left:40%; animation-delay:5s; }
+        .cover-particle:nth-child(9) { width:5px; height:5px; top:10%; left:45%; animation-delay:3.5s; }
+        .cover-particle:nth-child(10) { width:3px; height:3px; top:50%; left:10%; animation-delay:1.8s; }
+        @keyframes particleDrift {
+            0%, 100% { transform: translateY(0) scale(1); opacity: .5; }
+            25%      { transform: translateY(-30px) scale(1.5); opacity: 1; }
+            50%      { transform: translateY(-10px) scale(1); opacity: .3; }
+            75%      { transform: translateY(-40px) scale(2); opacity: .8; }
+        }
+
+        .cover-img-wrap {
+            width: 160px; height: 160px; border-radius: 50%;
+            border: 2px solid rgba(212,175,55,.5);
+            overflow: hidden; margin-bottom: 28px;
+            position: relative; z-index: 1;
+            animation: coverFadeIn 1.5s ease-out;
+            background-color: rgba(212,175,55,.08);
+        }
+        .cover-img-wrap img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block;
+        }
+        @keyframes coverFadeIn {
+            0% { opacity: 0; transform: scale(.8) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .cover-title {
+            font-size: 28px; font-weight: 300; color: #f5d78c;
+            letter-spacing: 8px; margin-bottom: 12px;
+            position: relative; z-index: 1;
+            animation: coverFadeIn 1.5s .3s both;
+        }
+        .cover-names {
+            font-size: 20px; font-weight: 200; color: rgba(245,215,140,.85);
+            letter-spacing: 6px; margin-bottom: 20px;
+            position: relative; z-index: 1;
+            animation: coverFadeIn 1.5s .5s both;
+        }
+        .cover-date {
+            font-size: 14px; font-weight: 200; color: rgba(245,215,140,.55);
+            letter-spacing: 4px;
+            position: relative; z-index: 1;
+            animation: coverFadeIn 1.5s .7s both;
+        }
+        .cover-line {
+            width: 1px; height: 36px;
+            background: linear-gradient(to bottom, transparent, rgba(212,175,55,.5), transparent);
+            margin: 18px 0;
+            position: relative; z-index: 1;
+            animation: coverFadeIn 1.5s .9s both;
+        }
+
+        /* ============ 第二屏：引言 + 小画廊 ============ */
+        .screen-intro {
+            background: linear-gradient(180deg, #fef9f3 0%, #fdf3e7 50%, #fce8d5 100%);
+        }
+        .intro-img-wrap {
+            width: 65%; max-width: 240px; aspect-ratio: 3/4;
+            border-radius: 12px; overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 12px 40px rgba(0,0,0,.1);
+            animation: fadeInUp 1s .2s both;
+        }
+        .intro-img-wrap img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block;
+        }
+        .intro-mini-gallery {
+            display: flex; gap: 8px; margin-bottom: 18px;
+            width: 65%; max-width: 240px;
+            animation: fadeInUp 1s .3s both;
+        }
+        .intro-mini-gallery .mini-img {
+            flex: 1; aspect-ratio: 1/1; border-radius: 8px;
+            overflow: hidden;
+        }
+        .intro-mini-gallery .mini-img img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block;
+        }
+        .intro-text {
+            font-size: 14px; line-height: 1.9; color: #6b5a50;
+            text-align: center; letter-spacing: 1px;
+            font-weight: 300; max-width: 260px;
+            animation: fadeInUp 1s .4s both;
+        }
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============ 第九屏：详细信息 + 装饰图 ============ */
+        .screen-detail {
+            background: linear-gradient(180deg, #faf8f6 0%, #f5efe8 100%);
+        }
+        .detail-decor-imgs {
+            display: flex; gap: 10px; margin-bottom: 18px;
+            width: 85%; max-width: 320px;
+            animation: fadeInUp 1s .1s both;
+        }
+        .detail-decor-imgs .decor-img {
+            flex: 1; aspect-ratio: 4/3; border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,.06);
+        }
+        .detail-decor-imgs .decor-img img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block;
+        }
+        .detail-card {
+            width: 100%; max-width: 320px;
+            background: rgba(255,255,255,.75);
+            border-radius: 14px; padding: 28px 22px;
+            box-shadow: 0 8px 30px rgba(0,0,0,.04);
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 1s .2s both;
+        }
+        .detail-item {
+            display: flex; align-items: flex-start;
+            margin-bottom: 18px; gap: 12px;
+        }
+        .detail-item:last-child { margin-bottom: 0; }
+        .detail-icon {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, #d4a373, #c4925a);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; flex-shrink: 0; color: #fff;
+        }
+        .detail-label {
+            font-size: 11px; color: #b8a494; letter-spacing: 2px;
+            margin-bottom: 3px; text-transform: uppercase;
+        }
+        .detail-value {
+            font-size: 15px; color: #4a3a2e; font-weight: 300;
+            letter-spacing: 1px; line-height: 1.5;
+        }
+
+        /* ============ 第三~七屏：单张照片展示屏 ============ */
+        .screen-photo {
+            background: linear-gradient(180deg, #fef9f3 0%, #fdf3e7 60%, #fce8d5 100%);
+        }
+        .photo-img-wrap {
+            width: 72%; max-width: 280px; aspect-ratio: 3/4;
+            border-radius: 14px; overflow: hidden;
+            margin-bottom: 22px;
+            box-shadow: 0 14px 44px rgba(0,0,0,.12);
+            animation: fadeInUp 1s .15s both;
+        }
+        .photo-img-wrap img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block;
+        }
+        .photo-caption {
+            font-size: 16px; line-height: 1.8; color: #6b5a50;
+            text-align: center; letter-spacing: 2px;
+            font-weight: 300; max-width: 280px;
+            animation: fadeInUp 1s .35s both;
+        }
+        .photo-caption small {
+            display: block; font-size: 12px; color: #b8a494;
+            margin-top: 4px; letter-spacing: 1px;
+        }
+
+        /* ============ 第八屏：流程安排 + 图片 ============ */
+        .screen-schedule {
+            background: linear-gradient(180deg, #fcfaf7 0%, #f6f0e9 100%);
+        }
+        .schedule-imgs {
+            display: flex; gap: 10px; margin-bottom: 22px;
+            width: 82%; max-width: 300px;
+            animation: fadeInUp 1s .1s both;
+        }
+        .schedule-imgs .sched-img {
+            flex: 1; aspect-ratio: 1/1; border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0,0,0,.06);
+        }
+        .schedule-imgs .sched-img img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block;
+        }
+        .timeline {
+            position: relative; width: 100%; max-width: 280px;
+            padding-left: 26px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute; left: 11px; top: 0; bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, #c4925a 10%, #c4925a 90%, transparent);
+        }
+        .timeline-item {
+            position: relative; margin-bottom: 24px;
+            animation: fadeInUp 1s both;
+        }
+        .timeline-item:nth-child(1) { animation-delay: .2s; }
+        .timeline-item:nth-child(2) { animation-delay: .4s; }
+        .timeline-item:nth-child(3) { animation-delay: .6s; }
+        .timeline-item:nth-child(4) { animation-delay: .8s; }
+        .timeline-dot {
+            position: absolute; left: -20px; top: 2px;
+            width: 9px; height: 9px; border-radius: 50%;
+            background: #c4925a;
+            box-shadow: 0 0 0 5px rgba(196,146,90,.15);
+        }
+        .timeline-time {
+            font-size: 11px; color: #b8a494; letter-spacing: 2px;
+            margin-bottom: 3px;
+        }
+        .timeline-title {
+            font-size: 16px; color: #4a3a2e; font-weight: 400;
+            letter-spacing: 1px;
+        }
+        .timeline-desc {
+            font-size: 12px; color: #8c7b6e; margin-top: 3px;
+            font-weight: 300;
+        }
+
+        /* ============ 第十屏：结束 & RSVP（金色主题） ============ */
+        .screen-end {
+            background: linear-gradient(160deg, #1a1005 0%, #2d1c08 35%, #4a2e10 70%, #3d220c 100%);
+        }
+        .end-imgs {
+            display: flex; gap: 12px; margin-bottom: 28px;
+            width: 70%; max-width: 280px;
+            justify-content: center;
+            animation: coverFadeIn 1.5s both;
+        }
+        .end-imgs .end-img {
+            flex: 1; aspect-ratio: 1/1; border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(212,175,55,.35);
+        }
+        .end-imgs .end-img img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block;
+        }
+        .end-thanks {
+            font-size: 24px; color: #f5d78c; font-weight: 200;
+            letter-spacing: 6px; margin-bottom: 14px;
+            animation: coverFadeIn 1.5s .2s both;
+        }
+        .end-text {
+            font-size: 14px; color: rgba(245,215,140,.55);
+            letter-spacing: 2px; text-align: center;
+            line-height: 2; font-weight: 200;
+            animation: coverFadeIn 1.5s .4s both;
+        }
+        .rsvp-btn {
+            margin-top: 28px;
+            padding: 12px 48px;
+            border: 1px solid rgba(212,175,55,.4);
+            border-radius: 50px; color: #f5d78c;
+            font-size: 15px; letter-spacing: 4px;
+            background: transparent; cursor: pointer;
+            transition: all .3s;
+            animation: coverFadeIn 1.5s .6s both;
+            font-weight: 200;
+        }
+        .rsvp-btn:active {
+            background: rgba(212,175,55,.15);
+            border-color: rgba(212,175,55,.7);
+        }
+
+        /* ---------- 响应式微调 ---------- */
+        @media (min-width: 431px) {
+            .container { border-left: 1px solid rgba(255,255,255,.05); border-right: 1px solid rgba(255,255,255,.05); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ========== 第一屏：封面 ========== -->
+    <section class="screen screen-cover">
+        <div class="cover-decor">
+            <div class="cover-particle"></div><div class="cover-particle"></div>
+            <div class="cover-particle"></div><div class="cover-particle"></div>
+            <div class="cover-particle"></div><div class="cover-particle"></div>
+            <div class="cover-particle"></div><div class="cover-particle"></div>
+            <div class="cover-particle"></div><div class="cover-particle"></div>
+        </div>
+        <div class="cover-img-wrap">
+            <img src="https://picsum.photos/id/106/320/320" alt="新人合照" loading="lazy"/>
+        </div>
+        <h1 class="cover-title">邀 请 函</h1>
+        <p class="cover-names">张  宇  &  林  悦</p>
+        <div class="cover-line"></div>
+        <p class="cover-date">2026 年 10 月 18 日</p>
+        <div class="swipe-hint">↑ 向上滑动 ↑</div>
+    </section>
+
+    <!-- ========== 第二屏：引言 + 小画廊 ========== -->
+    <section class="screen screen-intro">
+        <div class="intro-img-wrap">
+            <img src="https://picsum.photos/id/108/480/640" alt="浪漫合照" loading="lazy"/>
+        </div>
+        <div class="intro-mini-gallery">
+            <div class="mini-img">
+                <img src="https://picsum.photos/id/110/200/200" alt="戒指" loading="lazy"/>
+            </div>
+            <div class="mini-img">
+                <img src="https://picsum.photos/id/111/200/200" alt="手捧花" loading="lazy"/>
+            </div>
+        </div>
+        <p class="intro-text">
+            茫茫人海，何其有幸与你相遇。<br/>
+            从初见的心动，到相知的默契，<br/>
+            从携手同行的每一天，<br/>
+            到决定共度余生的这一刻。<br/>
+            我们想把这份喜悦<br/>
+            分享给最重要的你。
+        </p>
+    </section>
+
+    <!-- ========== 第三屏：初见 ========== -->
+    <section class="screen screen-photo">
+        <div class="photo-img-wrap">
+            <img src="https://picsum.photos/id/1015/560/746" alt="初见" loading="lazy"/>
+        </div>
+        <p class="photo-caption">还记得第一次遇见你<small>那天阳光正好，你穿了一件白衬衫</small></p>
+    </section>
+
+    <!-- ========== 第四屏：相知 ========== -->
+    <section class="screen screen-photo">
+        <div class="photo-img-wrap">
+            <img src="https://picsum.photos/id/1016/560/746" alt="相知" loading="lazy"/>
+        </div>
+        <p class="photo-caption">慢慢地走进彼此的世界<small>每一个平凡的日子都变得闪闪发光</small></p>
+    </section>
+
+    <!-- ========== 第五屏：相爱 ========== -->
+    <section class="screen screen-photo">
+        <div class="photo-img-wrap">
+            <img src="https://picsum.photos/id/1018/560/746" alt="相爱" loading="lazy"/>
+        </div>
+        <p class="photo-caption">从朋友到恋人<small>原来最好的关系就是，和你在一起</small></p>
+    </section>
+
+    <!-- ========== 第六屏：求婚 ========== -->
+    <section class="screen screen-photo">
+        <div class="photo-img-wrap">
+            <img src="https://picsum.photos/id/1025/560/746" alt="求婚" loading="lazy"/>
+        </div>
+        <p class="photo-caption">"嫁给我好吗？"<small>全世界都安静了，只剩下我的心跳和你</small></p>
+    </section>
+
+    <!-- ========== 第七屏：携手 ========== -->
+    <section class="screen screen-photo">
+        <div class="photo-img-wrap">
+            <img src="https://picsum.photos/id/1044/560/746" alt="携手" loading="lazy"/>
+        </div>
+        <p class="photo-caption">往后余生，请多指教<small>两个人，一辈子，一切都刚刚好</small></p>
+    </section>
+
+    <!-- ========== 第八屏：流程安排 + 图片 ========== -->
+    <section class="screen screen-schedule">
+        <div class="schedule-imgs">
+            <div class="sched-img">
+                <img src="https://picsum.photos/id/117/200/200" alt="婚桌布置" loading="lazy"/>
+            </div>
+            <div class="sched-img">
+                <img src="https://picsum.photos/id/118/200/200" alt="新娘" loading="lazy"/>
+            </div>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-time">16:00</div>
+                <div class="timeline-title">迎亲 & 外景拍摄</div>
+                <div class="timeline-desc">亲友齐聚，记录幸福瞬间</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-time">17:30</div>
+                <div class="timeline-title">嘉宾签到 & 迎宾</div>
+                <div class="timeline-desc">合影留念，享用迎宾茶点</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-time">18:08</div>
+                <div class="timeline-title">婚礼仪式</div>
+                <div class="timeline-desc">交换誓言，见证爱的承诺</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-time">19:00</div>
+                <div class="timeline-title">喜宴 & 节目</div>
+                <div class="timeline-desc">举杯共庆，共享美好时光</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== 第九屏：详细信息 + 装饰图 ========== -->
+    <section class="screen screen-detail">
+        <div class="detail-decor-imgs">
+            <div class="decor-img">
+                <img src="https://picsum.photos/id/113/300/225" alt="场地布置" loading="lazy"/>
+            </div>
+            <div class="decor-img">
+                <img src="https://picsum.photos/id/116/300/225" alt="婚宴桌花" loading="lazy"/>
+            </div>
+        </div>
+        <div class="detail-card">
+            <div class="detail-item">
+                <div class="detail-icon">📅</div>
+                <div>
+                    <div class="detail-label">婚礼日期</div>
+                    <div class="detail-value">2026年10月18日<br/>农历九月初八 · 星期日</div>
+                </div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-icon">🕐</div>
+                <div>
+                    <div class="detail-label">迎宾时间</div>
+                    <div class="detail-value">17:30</div>
+                </div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-icon">🎉</div>
+                <div>
+                    <div class="detail-label">仪式时间</div>
+                    <div class="detail-value">18:08</div>
+                </div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-icon">📍</div>
+                <div>
+                    <div class="detail-label">婚礼地点</div>
+                    <div class="detail-value">上海市 · 浦东香格里拉大酒店<br/>紫金厅（三楼）</div>
+                </div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-icon">🚗</div>
+                <div>
+                    <div class="detail-label">导航提示</div>
+                    <div class="detail-value">地铁2号线陆家嘴站 6号口<br/>酒店提供免费停车</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== 第十屏：结尾 ========== -->
+    <section class="screen screen-end">
+        <div class="cover-decor">
+            <div class="cover-particle"></div><div class="cover-particle"></div>
+            <div class="cover-particle"></div><div class="cover-particle"></div>
+            <div class="cover-particle"></div><div class="cover-particle"></div>
+            <div class="cover-particle"></div><div class="cover-particle"></div>
+            <div class="cover-particle"></div><div class="cover-particle"></div>
+        </div>
+        <div class="end-imgs">
+            <div class="end-img">
+                <img src="https://picsum.photos/id/120/200/200" alt="新人" loading="lazy"/>
+            </div>
+            <div class="end-img">
+                <img src="https://picsum.photos/id/122/200/200" alt="合影" loading="lazy"/>
+            </div>
+        </div>
+        <h2 class="end-thanks">感 谢 莅 临</h2>
+        <p class="end-text">
+            感谢你见证我们人生中最重要的时刻<br/>
+            你的到来，是我们最大的荣幸<br/>
+            愿与你分享这份喜悦与幸福
+        </p>
+        <button class="rsvp-btn" onclick="handleRSVP()">确 认 出 席</button>
+        <div class="swipe-hint" style="bottom: 20px;">期待你的到来 ❤️</div>
+    </section>
+
+</div>
+
+<!-- 音乐按钮 -->
+<button class="music-btn playing" id="musicBtn" onclick="toggleMusic()">🎵</button>
+
+<!-- 背景音乐 -->
+<audio id="bgMusic" loop preload="auto">
+    <source src="https://kw-er.kuwo.cn/6a76956a5c0d46e1a4c4ab09a346ac7d/6a755c14/resource/30106/trackmedia/M500003UpzC63UG2st.mp3?bitrate%24128&from=vip" type="audio/mpeg"/>
+</audio>
+
+<script>
+    /* ===== 背景音乐控制 ===== */
+    const bgMusic = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicBtn');
+    let musicPlaying = false;
+
+    function initMusic() {
+        if (!bgMusic.src || bgMusic.src === window.location.href || bgMusic.src === '') {
+            console.log('💡 提示：请替换 <audio> 的 src 为真实背景音乐 URL');
+        }
+        bgMusic.volume = 0.5;
+        bgMusic.play().then(() => {
+            musicPlaying = true;
+            musicBtn.classList.add('playing');
+            musicBtn.textContent = '🎵';
+        }).catch(() => {
+            musicPlaying = false;
+            musicBtn.classList.remove('playing');
+            musicBtn.textContent = '🔇';
+        });
+    }
+
+    function toggleMusic() {
+        if (musicPlaying) {
+            bgMusic.pause();
+            musicPlaying = false;
+            musicBtn.classList.remove('playing');
+            musicBtn.textContent = '🔇';
+        } else {
+            bgMusic.play().then(() => {
+                musicPlaying = true;
+                musicBtn.classList.add('playing');
+                musicBtn.textContent = '🎵';
+            }).catch(() => {
+                musicPlaying = false;
+                musicBtn.classList.remove('playing');
+                musicBtn.textContent = '🔇';
+            });
+        }
+    }
+
+    /* ===== RSVP 按钮 ===== */
+    function handleRSVP() {
+        alert('感谢您的回复！\n我们期待在婚礼现场与您相见 ❤️');
+    }
+
+    /* ===== 首次交互时初始化音乐 ===== */
+    document.addEventListener('click', function firstTouch() {
+        initMusic();
+        document.removeEventListener('click', firstTouch);
+    }, { once: true });
+    document.addEventListener('touchstart', function firstTouch2() {
+        initMusic();
+        document.removeEventListener('touchstart', firstTouch2);
+    }, { once: true });
+</script>
+
+</body>
+</html>
